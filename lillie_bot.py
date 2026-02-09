@@ -5,7 +5,10 @@ import telebot
 from dotenv import load_dotenv
 import time
 
-# Load environment variables from .env
+# Used @BotFather on Telegram to create a new bot and get the token
+# In .env, paste BOT_TOKEN= token_from_Telegram
+
+# Loading environment variables from .env
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -14,14 +17,13 @@ if not BOT_TOKEN:
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# Load your Goodreads CSV
+# Loading Goodreads CSV
 books = pd.read_csv("goodreads_library_export.csv")
 
-# Filter only the "Want to Read" shelf
-# Ensure the column name matches exactly in your CSV
+# Filtering only the "Want to Read" shelf
 tbr = books[books["Exclusive Shelf"] == "to-read"]
 
-# Keep track of recently recommended books
+# Keeping track of recently recommended books
 recent_books = []
 MAX_RECENT = 5  # number of books to remember to avoid repeats
 
@@ -41,7 +43,7 @@ def recommend_book(message):
         bot.send_message(message.chat.id, "Your 'Want to Read' shelf is empty!")
         return
 
-    # Pick a random book
+    # Random book
     book = tbr.sample(1).iloc[0]
 
     title = book.get("Title", "Unknown")
@@ -71,3 +73,4 @@ while True:
     except Exception as e:
         print(f"Polling error: {e}")
         time.sleep(5)
+
